@@ -1,0 +1,8 @@
+k,accuracy,selected_by_cv
+1,0.924,False
+3,0.931,True
+5,0.932,False
+7,0.93,False
+9,0.931,False
+11,0.927,False
+15,0.925,False

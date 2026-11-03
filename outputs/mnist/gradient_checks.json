@@ -1,0 +1,40 @@
+{
+  "softmax": {
+    "finite_differences": [
+      {
+        "reg": 0.0,
+        "loss": 2.3037455160971794,
+        "max_relative_error": 1.3345567282918788e-08,
+        "relative_l2_error": 1.0617351708671906e-10,
+        "checked_parameters": 200,
+        "h": 1e-05
+      },
+      {
+        "reg": 50.0,
+        "loss": 2.314091479556531,
+        "max_relative_error": 1.388678096370447e-08,
+        "relative_l2_error": 7.312130631793327e-11,
+        "checked_parameters": 200,
+        "h": 1e-05
+      }
+    ],
+    "naive_vectorized": {
+      "naive_loss": 2.3025365066633,
+      "vectorized_loss": 2.3025365066633006,
+      "naive_seconds": 0.004439989999809768,
+      "vectorized_seconds": 0.00018070999794872478,
+      "speedup": 24.56969758291727,
+      "loss_absolute_difference": 4.440892098500626e-16,
+      "gradient_fro_difference": 1.8151387905036383e-16,
+      "samples": 100,
+      "features_with_bias": 785,
+      "reg": 5e-06,
+      "timing_repeats": 3
+    }
+  },
+  "softmax_sanity": {
+    "initial_loss": 2.3025365062672694,
+    "uniform_loss": 2.302585092994046,
+    "absolute_difference": 4.8586726776544964e-05
+  }
+}

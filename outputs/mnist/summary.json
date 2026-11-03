@@ -1,0 +1,238 @@
+{
+  "format_version": 1,
+  "status": "completed",
+  "started_at_utc": "2026-10-27T20:09:08.733935+00:00",
+  "dataset": {
+    "name": "mnist",
+    "image_shape": [
+      28,
+      28
+    ],
+    "class_names": [
+      "0",
+      "1",
+      "2",
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9"
+    ],
+    "pixel_max": 255.0,
+    "split_counts": {
+      "train": 5000,
+      "val": 1000,
+      "test": 1000
+    },
+    "variant": 4
+  },
+  "config": {
+    "seed": 42,
+    "k_choices": [
+      1,
+      3,
+      5,
+      7,
+      9,
+      11,
+      15
+    ],
+    "cv_folds": 5,
+    "learning_rates": [
+      0.01,
+      0.05,
+      0.1
+    ],
+    "regularization_strengths": [
+      0.0001,
+      0.001
+    ],
+    "num_iters": 600,
+    "batch_size": 128,
+    "blas_threads": 2
+  },
+  "protocol": {
+    "knn": "Flatten raw images, divide by pixel_max; Euclidean distance; no centering, no bias. Five-fold stratified CV on train only, then refit on complete train. Ties in CV mean choose smallest k. Train accuracy includes self-neighbors.",
+    "knn_test_curve": "Calculated only after fixing k using train CV; test curve is descriptive and never used for selection.",
+    "linear": "Softmax: flatten and divide by pixel_max; subtract mean TRAIN image; append bias=1.",
+    "linear_selection": "Softmax grid search is trained on train only and ranked by validation accuracy; test is used only after choosing hyperparameters.",
+    "regularization": "reg * sum(W**2), gradient 2*reg*W; includes bias row, as in the course implementation.",
+    "numerical_checks": "Centered finite differences on all 200 parameters of a reproducible 10x20 synthetic example; reg=0 and reg=50. Naive/vectorized timing uses up to 100 actual training samples and the actual feature dimension.",
+    "accuracy": "Fraction of correctly classified images, range [0,1]. All images in each stored split are used."
+  },
+  "environment": {
+    "python": "3.12.14",
+    "numpy": "2.3.5",
+    "platform": "Linux-6.18.55-x86_64-with-glibc2.39"
+  },
+  "knn": {
+    "best_k": 3,
+    "cv_mean_accuracy": 0.9266,
+    "cv_std_accuracy": 0.013704014010500703,
+    "baseline": {
+      "k": 1,
+      "train_accuracy": 1.0,
+      "val_accuracy": 0.944,
+      "test_accuracy": 0.924
+    },
+    "train_accuracy": 0.9674,
+    "val_accuracy": 0.938,
+    "test_accuracy": 0.931,
+    "cv_scores": [
+      {
+        "k": 1,
+        "mean_accuracy": 0.9259999999999999,
+        "std_accuracy": 0.011335784048754606
+      },
+      {
+        "k": 3,
+        "mean_accuracy": 0.9266,
+        "std_accuracy": 0.013704014010500703
+      },
+      {
+        "k": 5,
+        "mean_accuracy": 0.925,
+        "std_accuracy": 0.008366600265340763
+      },
+      {
+        "k": 7,
+        "mean_accuracy": 0.9214,
+        "std_accuracy": 0.013126309458488335
+      },
+      {
+        "k": 9,
+        "mean_accuracy": 0.921,
+        "std_accuracy": 0.01140175425099139
+      },
+      {
+        "k": 11,
+        "mean_accuracy": 0.9168,
+        "std_accuracy": 0.011366617790706267
+      },
+      {
+        "k": 15,
+        "mean_accuracy": 0.9103999999999999,
+        "std_accuracy": 0.012778888840583922
+      }
+    ],
+    "distance_matrix_shape": [
+      1000,
+      5000
+    ],
+    "checkpoint": "models/knn.npz"
+  },
+  "gradient_checks": {
+    "softmax": {
+      "finite_differences": [
+        {
+          "reg": 0.0,
+          "loss": 2.3037455160971794,
+          "max_relative_error": 1.3345567282918788e-08,
+          "relative_l2_error": 1.0617351708671906e-10,
+          "checked_parameters": 200,
+          "h": 1e-05
+        },
+        {
+          "reg": 50.0,
+          "loss": 2.314091479556531,
+          "max_relative_error": 1.388678096370447e-08,
+          "relative_l2_error": 7.312130631793327e-11,
+          "checked_parameters": 200,
+          "h": 1e-05
+        }
+      ],
+      "naive_vectorized": {
+        "naive_loss": 2.3025365066633,
+        "vectorized_loss": 2.3025365066633006,
+        "naive_seconds": 0.004439989999809768,
+        "vectorized_seconds": 0.00018070999794872478,
+        "speedup": 24.56969758291727,
+        "loss_absolute_difference": 4.440892098500626e-16,
+        "gradient_fro_difference": 1.8151387905036383e-16,
+        "samples": 100,
+        "features_with_bias": 785,
+        "reg": 5e-06,
+        "timing_repeats": 3
+      }
+    },
+    "softmax_sanity": {
+      "initial_loss": 2.3025365062672694,
+      "uniform_loss": 2.302585092994046,
+      "absolute_difference": 4.8586726776544964e-05
+    }
+  },
+  "softmax": {
+    "best_params": {
+      "learning_rate": 0.1,
+      "reg": 0.0001
+    },
+    "train_accuracy": 0.9002,
+    "val_accuracy": 0.893,
+    "test_accuracy": 0.887,
+    "baseline": {
+      "learning_rate": 0.01,
+      "reg": 0.001,
+      "train_accuracy": 0.8398,
+      "val_accuracy": 0.854,
+      "test_accuracy": 0.838
+    },
+    "search": [
+      {
+        "learning_rate": 0.01,
+        "reg": 0.0001,
+        "train_accuracy": 0.84,
+        "val_accuracy": 0.853
+      },
+      {
+        "learning_rate": 0.01,
+        "reg": 0.001,
+        "train_accuracy": 0.8398,
+        "val_accuracy": 0.854
+      },
+      {
+        "learning_rate": 0.05,
+        "reg": 0.0001,
+        "train_accuracy": 0.8864,
+        "val_accuracy": 0.886
+      },
+      {
+        "learning_rate": 0.05,
+        "reg": 0.001,
+        "train_accuracy": 0.8856,
+        "val_accuracy": 0.887
+      },
+      {
+        "learning_rate": 0.1,
+        "reg": 0.0001,
+        "train_accuracy": 0.9002,
+        "val_accuracy": 0.893
+      },
+      {
+        "learning_rate": 0.1,
+        "reg": 0.001,
+        "train_accuracy": 0.8986,
+        "val_accuracy": 0.893
+      }
+    ],
+    "checkpoint": "models/softmax.npz"
+  },
+  "elapsed_seconds": 11.323446278998745,
+  "completed_at_utc": "2026-10-27T20:09:20.057383+00:00",
+  "files": {
+    "figures": [
+      "examples.png",
+      "distance_matrix.png",
+      "knn_accuracy.png",
+      "mean_image.png",
+      "loss_curves.png",
+      "hyperparameter_search.png",
+      "confusion_matrices.png"
+    ],
+    "models": [
+      "models/knn.npz",
+      "models/softmax.npz"
+    ]
+  }
+}
